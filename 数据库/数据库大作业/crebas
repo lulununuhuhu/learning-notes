@@ -1,0 +1,139 @@
+/*==============================================================*/
+/* DBMS name:      ORACLE Version 11g                           */
+/* Created on:     2022/5/31 10:49:34                           */
+/*==============================================================*/
+
+
+alter table "OrderInfo"
+   drop constraint FK_ORDERINF_ONETOMANY_ADMINIST;
+
+alter table "OrderInfo"
+   drop constraint "FK_ORDERINF_ONETOMANY_PARENT&C";
+
+alter table "OrderInfo"
+   drop constraint FK_ORDERINF_ONETOMANY_TEACHER;
+
+drop index "oneTomany3_FK";
+
+drop index "oneTomany2_FK";
+
+drop index "oneTomany_1_FK";
+
+drop table "OrderInfo" cascade constraints;
+
+drop table "administrator" cascade constraints;
+
+drop table "parent&child" cascade constraints;
+
+drop table "teacher" cascade constraints;
+
+/*==============================================================*/
+/* Table: "OrderInfo"                                           */
+/*==============================================================*/
+create table "OrderInfo" 
+(
+   "orderId"            INTEGER              not null,
+   "par_parentId"       INTEGER,
+   "adm_adminId"        INTEGER,
+   "tea_teacherId"      INTEGER,
+   "orderStatus"        INTEGER              not null,
+   "serviceTime"        VARCHAR2(30),
+   "demand"             VARCHAR2(20),
+   "concreteDemand"     VARCHAR(255),
+   "createTime"         DATE,
+   "startTime"          DATE,
+   "endTime"            DATE,
+   "locateAddress"      VARCHAR2(50),
+   "childInfo"          VARCHAR2(50),
+   "price"              NUMBER,
+   "review"             FLOAT,
+   "orderInfoModifyTime" DATE,
+   constraint PK_ORDERINFO primary key ("orderId")
+);
+
+/*==============================================================*/
+/* Index: "oneTomany_1_FK"                                      */
+/*==============================================================*/
+create index "oneTomany_1_FK" on "OrderInfo" (
+   "tea_teacherId" ASC
+);
+
+/*==============================================================*/
+/* Index: "oneTomany2_FK"                                       */
+/*==============================================================*/
+create index "oneTomany2_FK" on "OrderInfo" (
+   "adm_adminId" ASC
+);
+
+/*==============================================================*/
+/* Index: "oneTomany3_FK"                                       */
+/*==============================================================*/
+create index "oneTomany3_FK" on "OrderInfo" (
+   "par_parentId" ASC
+);
+
+/*==============================================================*/
+/* Table: "administrator"                                       */
+/*==============================================================*/
+create table "administrator" 
+(
+   "adminId"            INTEGER              not null,
+   "adminAccount"       VARCHAR2(20)         not null,
+   "adminPassword"      VARCHAR2(20)         not null,
+   "adminRegisterTime"  DATE                 not null,
+   "adminModifiedTime"  DATE,
+   constraint PK_ADMINISTRATOR primary key ("adminId")
+);
+
+/*==============================================================*/
+/* Table: "parent&child"                                        */
+/*==============================================================*/
+create table "parent&child" 
+(
+   "parentId"           INTEGER              not null,
+   "childName"          VARCHAR2(20)         not null,
+   "childAge"           INTEGER              not null,
+   "phoneNumber"        VARCHAR2(11)         not null,
+   "locateAddress"      VARCHAR2(50)         not null,
+   "parentAccountStatus" INTEGER,
+   "parentOpenId"       VARCHAR2(50),
+   "parentAccount"      NUMBER,
+   "parentInfoModifyTime" DATE,
+   "parentRegisterTime" DATE,
+   constraint "PK_PARENT&CHILD" primary key ("parentId")
+);
+
+/*==============================================================*/
+/* Table: "teacher"                                             */
+/*==============================================================*/
+create table "teacher" 
+(
+   "teacherId"          INTEGER              not null,
+   "gender"             INTEGER              not null,
+   "name"               VARCHAR2(12)         not null,
+   "age"                INTEGER              not null,
+   "phoneNumber"        VARCHAR2(11),
+   "school"             VARCHAR2(30)         not null,
+   "photo"              VARCHAR2(200),
+   "introduction"       CLOB,
+   "review_score"       FLOAT,
+   "register_time"      DATE,
+   "last_modified_time" DATE,
+   "teacherAccountStatus" INTEGER,
+   "openid"             VARCHAR2(50),
+   "teacherAccount"     NUMBER,
+   constraint PK_TEACHER primary key ("teacherId")
+);
+
+alter table "OrderInfo"
+   add constraint FK_ORDERINF_ONETOMANY_ADMINIST foreign key ("adm_adminId")
+      references "administrator" ("adminId");
+
+alter table "OrderInfo"
+   add constraint "FK_ORDERINF_ONETOMANY_PARENT&C" foreign key ("par_parentId")
+      references "parent&child" ("parentId");
+
+alter table "OrderInfo"
+   add constraint FK_ORDERINF_ONETOMANY_TEACHER foreign key ("tea_teacherId")
+      references "teacher" ("teacherId");
+

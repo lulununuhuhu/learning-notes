@@ -1,0 +1,9 @@
+# 注解配置SpringMVC
+
+使用配置类和注解代替web.xml和SpringMVC配置文件的功能。
+
+## 1、创建初始化类，代替web.xml
+
+在servlet3.0环境中，容器会在类路径中查找实现javax.servlet.ServletContainerInitializer接口的类，如果找到的话就用它来配置Servlet的容器。
+
+Spring提供了这个接口的实现，名为SpringServletContaineInitializer。这个类反过来又会查找实现WebApplicationInitializer的类并将配置的任务交给他们来完成。Spring3.2引入了一个遍历的WebApplicationInitializer基础实现，名为AbstractAnnotationConfigDispatcherServletInitializer，当我们的类扩展了AbstractAnnotationConfigDispatcherServletInitialize并将其部署到Servlet3.0容器的时候，容器会自动发现它，并用它来配置Servlet上下文。
